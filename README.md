@@ -46,6 +46,8 @@ To compile the program, this tools/libraries are necessary:
 Installation:
 =============
 
+- Create config scripts:
+   make -f makefile.dist
 - launch the configure script:
 ```
   ./configure
