@@ -47,7 +47,9 @@ Installation:
 =============
 
 - Create config scripts:
+```
    make -f makefile.dist
+```
 - launch the configure script:
 ```
   ./configure
