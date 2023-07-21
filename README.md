@@ -12,7 +12,7 @@ as shown in the following picture, messages are sent using malformed ARP packets
 Disclaimers:
 ============
 
-* This program is intended to be a concept to exploit arp messages ans should not be used in production environment because could create serious malfunctions in network communications. So I discourage the use of this software outside controlled test environments. I will not be responsible of any damage this software could cause. So don't call me if your network administrator is looking for you with homicidal intentions because you are using arpchat in production environment, I advised you.
+* This program is intended to be a concept to exploit arp messages ans should not be used in production environment because could create serious malfunctions in network communications. So I discourage the use of this software outside controlled test environments. I will not be responsible of any damage this software could cause. So don't call me if your network administrator is looking for you with homicidal intentions because you are using arpchatcpp in production environment, I advised you.
 
 * Before using this program you should be familiar with gratuitous ARP requests (RFC 5227).
 
@@ -65,7 +65,7 @@ Installation:
 
 * set capabilities:
 ```
-  sudo setcap cap_net_raw=eip src/arpchat   
+  sudo setcap cap_net_raw=eip src/arpchatcpp   
 ```
 
 Configuration:
@@ -80,7 +80,7 @@ Example:
 
 * The following example shows how to start the application:
 ```
- ./arpchat -i enp0s1 -d0 -f ../data/arpchat.lua
+ ./arpchatcpp -i enp0s1 -d0 -f ../data/arpchat.lua
 ```
 where:
 - enp0s1 is the network interface used to communicate<BR>
