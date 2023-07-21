@@ -237,7 +237,7 @@ void printInfo(char* cmd){
       cerr << cmd << " [-i<iface>] [-f <config_full_path>] [-d level] | [-h]\n\n";
       cerr << " -i  <iface>     Specify the network interface\n";
       cerr << " -f  <full_path> Specify the configuration path\n";
-      cerr << " -d              set debug mode\n";
+      cerr << " -d  <dbg_level> set debug mode\n";
       cerr << " -h              print this synopsis\n";
       exit(EXIT_FAILURE);
 }
