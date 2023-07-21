@@ -1,80 +1,46 @@
-.TH WH 1 "JANUARY 2017" Linux "User Manuals"                                  
+.TH ARPCHATCPP 1 "JULY 2023" Linux "User Manuals"                                  
 .SH NAME                                                                     
-wh \- A test/stress tool capable to send heavy network traffic composed by malformed icmp packets.
+arpchatcpp \- Arpchat is a program implementing a chat using malformed gratuitous ARP packets.
 .SH SYNOPSIS                                                                 
-.B  wh [-i interface] 
+.B  arpchatcpp [-i interface] [-f config_path]
+   [-d level]
    [-h] 
 .SH DESCRIPTION                                                              
-.B wh (Wild Horde) 
-is a test/stress tool capable to send heavy network traffic composed by malformed icmp packets fo test purpose. It's useful to investigate bugs and to find out vulnerabilies.
+.B arpchatcpp 
+this program implements a textual chat application with an ASCII GUI. It's intended to be a concept to exploit arp messages ans should not be used in production environment because could create serious malfunctions in network communications.
 
-A configuration file or batch script can be passed via pipe.
+A configuration file using LUA syntax must be provided to configure emitted datagrams. Knownlwdge of RFC 5227 (gratuitous ARP requests) is required for a correct configuration.
 
-The program has its own "shell like" interface. It can be used in three ways:
+The file contains two major config categories: values and filters.
 
- - batch;
- - interactive;
- - mixed.
+Values are employed to configure datagram's fields, filters to iimplement a whitelist allowiong only compliant datagrams payload to be shown in the chat conversation panel.
 
-In batch mode, you can pass a configuration file via pipe:
+Values are: hdrSenderMAC, hdrTargetMAC, frameType, hardType, protType, hardSize, protSize, opcode, senderMAC, targetMAC, senderIp, targetIp.
 
-  cat conf.txt | ./wh -ieth0
+Filters are: frameTypeFilter, hardTypeFilter, protTypeFilter, hardSizeFilter, protSizeFilter, opcodeFilter, senderMACFilter, senderIpFilter, targetMACFilter, targetIpFilter.
 
-If the configuration file contains the command "wexit", the program will terminate when all the tasks specified in the configuration file will be executed.
-Not specifying "wexit", you are using the mixed mode: after the launch of the batch operation in background an iteractive shell will be available. If no configuration is specified, the interactive shell will be available instantly.
+MAC and IP address are configured as strings, integes as hex values.
 
-The program is multihreading and permits to launch jobs in background against multiple targets or against a single target with multiple kind of attack.
+The program requires  cap_net_raw=eip, root user is not allowed.
 
-Every job get the IP header value, network interface limits and timout constraints fron the  environment.
-You can print/modify the environment with the set command:
+.SH DISCLAIMERS
 
-- set all print the current configuration:
+This program is intended to be a concept to exploit arp messages ans should not be used in production environment because could create serious malfunctions in network communications. So I discourage the use of this software outside controlled test environments. I will not be responsible of any damage this software could cause. So don't call me if your network administrator is looking for you with homicidal intentions because you are using arpchatcpp in production environment, I advised you.
 
-![alt text](screenshoots/handshake.png "Set all screenshoot")
-
-- To change a value:
-
-  set <var> <value>
-
-a single space is the separator.
-
-All the following jobs will use that configuration for all their execution. Change in the configuration will affect only the new jobs.
-
-- To create a job:
-
-  job <target_ip> <type> <code> <pause>
-
-where target_ip is the ip address of the target, type the ICMP type, code the ICMP code, pause the time in usecond between the dispatch of two packets and can be used to limit the bandwidth / system resources.
-
-- Job control:
-
-The list command print a list of the jobs in execution. A job can be terminated with the kill command using the "pid" specified int he first column of the list output.
-
-- Scan mode:
-
-A special kind of job is available: scan. Launching a scan job multiple combination of malformed packets will be send to the target.
-
-  scan <target_ip> <pause>
-
-- To closhe the shell:
-
-  exit
-
-
-- Help info
-
-  help
+Before using this program you should be familiar with gratuitous ARP requests (RFC 5227).                                                              
 
 .SH OPTIONS                                                       
 .IP -i interface
-Specifies the initial network interface. 
+Specifies the network interface employed. 
+.IP -f configuration_path
+Specifies the full path related to the configuration file.
+.IP -d level
+Specifies debugging lev el (0-2).
 .IP -h
-A short description of wh command line syntax.
+A short description of arpchatcpp command line syntax.
 .SH BUGS                                                                     
-This program is an alpha, massive changes are possible.
+This program is experimental, massive changes are possible.
 .SH AUTHOR                                                                   
 Gabriele Bonacini <gabriele.bonacini@protonmail.com>
 .SH "SEE ALSO"                                                               
- Linux: ip(7) icmp(7);
- Os X:  ip(4) icmp(4);
- RFC 792 for a description of the ICMP protocol.
+ RFC 5227 gratuitous ARP requests
