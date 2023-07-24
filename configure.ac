@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([tssh], m4_esyscmd([ tr -d '\n' < version ]))
+AC_INIT([arpchatcpp], m4_esyscmd([ tr -d '\n' < version ]))
 
 LUA_VERSION="5.4"
 CXXFLAGS=""
