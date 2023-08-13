@@ -44,26 +44,26 @@
 
 namespace arplib{
 
-    using std::copy;
-    using std::array;
-    using std::stringstream;
-    using std::string;
-    using std::to_string;
-    using std::setfill;
-    using std::setw;
-    using std::hex;
-    using std::dec;
-    using std::vector;
-    using std::mt19937;
-    using std::uniform_int_distribution;
-    using std::random_device;
-    using std::tuple_size;
-    using std::thread;
-    using std::memcpy;
-    using std::terminate;
-    using debugmode::DEBUG_MODE;
-    using debugmode::Debug;
-    using stringutils::mergeStrings;
+    using std::copy,
+          std::array,
+          std::stringstream,
+          std::string,
+          std::to_string,
+          std::setfill,
+          std::setw,
+          std::hex,
+          std::dec,
+          std::vector,
+          std::mt19937,
+          std::uniform_int_distribution,
+          std::random_device,
+          std::tuple_size,
+          std::thread,
+          std::memcpy,
+          std::terminate,
+          debugmode::DEBUG_MODE,
+          debugmode::Debug,
+          stringutils::mergeStrings;
 
     FilterValue::FilterValue(uint8_t val)   noexcept
          : bt{val}
@@ -306,7 +306,7 @@ namespace arplib{
         static_assert( sizeof(arppkt) <= tuple_size<decltype(etherFrame)>{} );
         memcpy(etherFrame.data(), &arppkt, sizeof(arppkt));
 
-        int bytesSent = sendto(sfd, etherFrame.data(), sizeof(ArpPkt), 0, (struct sockaddr *) &sockaddrll, sizeof (sockaddrll));
+        int bytesSent = sendto(sfd, etherFrame.data(), sizeof(ArpPkt), 0, reinterpret_cast<Sockaddr*>(&sockaddrll), sizeof (sockaddrll));
         if (bytesSent  <= 0){
              string errmsg = mergeStrings({"Error: sendto() : ", strerror(errno)});
              Debug::printLog(errmsg, debugLevel);
@@ -415,12 +415,12 @@ namespace arplib{
     }
 
     int Arpsocket::receive(void)  anyexcept{
-        struct sockaddr_in cliaddr;
+        SockaddrIn cliaddr;
         socklen_t clilen { sizeof(cliaddr) };
 
         static_assert( sizeof(ArpPkt) <= tuple_size<decltype(incoming)>{} );
         incoming = {};
-        int bytesRecv = recvfrom(sfd, incoming.data(), incoming.size(), 0, (struct sockaddr *)&cliaddr, &clilen);
+        int bytesRecv = recvfrom(sfd, incoming.data(), incoming.size(), 0, reinterpret_cast<Sockaddr*>(&cliaddr), &clilen);
         if(bytesRecv == -1 ) return bytesRecv;
 
         ArpPkt lastPacketRecv;
@@ -530,46 +530,6 @@ namespace arplib{
        return errorMessage.c_str();
     }
     
-    uint8_t Arpsocket::genRnd(vector<uint8_t> *array, ptrdiff_t start) const anyexcept{
-        try{
-            random_device              rdev;         
-            mt19937                    gen{rdev()};
-            uniform_int_distribution<> dis(0, 255);
-            
-            if(array == nullptr){
-                return static_cast<uint8_t>(dis(gen));
-            }else{
-                for(auto i = array->begin() + start; i != array->end(); ++i)
-                    *i = static_cast<uint8_t>(dis(gen));
-                return 0;
-            }   
-        }catch(...){
-            string errmsg { "genRnd: Error generating random numbers" };
-            Debug::printLog(errmsg, DEBUG_MODE::ERR_DEBUG);
-            throw ArpSocketException(errmsg);
-        }
-    }
-
-    uint16_t Arpsocket::checksum(void *buff, size_t len) const noexcept{	
-        uint16_t        odd_byte   { 0 },
-                        *buffer    { static_cast<uint16_t*>(buff) };
-        uint32_t        sum        { 0 };
-    
-        while(len > 1){
-            sum += *buffer++;
-            len -= 2;
-        }
-
-        if( len == 1 ){
-            *(reinterpret_cast<uint8_t*>(&odd_byte)) = *(reinterpret_cast<uint8_t*>(buffer));
-            sum += odd_byte;
-        }
-    
-        sum =  ( sum >> 16 ) + ( sum & 0xffff ); 
-        sum += ( sum >> 16 );                   
-        return static_cast<uint16_t>(~sum);
-    }
-
     void Arpsocket::shutdown(void)  noexcept{
          running = false;
     }

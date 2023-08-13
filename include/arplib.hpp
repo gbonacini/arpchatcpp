@@ -136,10 +136,6 @@ namespace arplib{
            void printSrcMAC(void)                        const     noexcept;
            void printDstMAC(void)                        const     noexcept;
            void printSrcIp(void)                         const     noexcept;
-           uint16_t checksum(void *buff, 
-                             size_t len)                 const     noexcept;	
-           uint8_t  genRnd(std::vector<uint8_t>* array, 
-                           ptrdiff_t start)              const     anyexcept;
 
         public:
 

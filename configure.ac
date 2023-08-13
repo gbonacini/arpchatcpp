@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([arpchatcpp], m4_esyscmd([ tr -d '\n' < version ]))
+AC_INIT([tssh], m4_esyscmd([ tr -d '\n' < version ]))
 
 LUA_VERSION="5.4"
 CXXFLAGS=""
@@ -44,13 +44,13 @@ case $host_os in
               # OPTIMIZATION="-O0 "
               OPTIMIZATION="-O3 "
               if test "x$CC" = xgcc; then
-                    CXXFLAGS=" -std=c++17 -pthread -ggdb -Wall -Wextra -DLINUX_OS\
+                    CXXFLAGS=" -std=c++20 -pthread -ggdb -Wall -Wextra -DLINUX_OS\
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} -fstack-protector \
                              --param=ssp-buffer-size=4 -Wformat -Werror=format-security \
                              -Wno-misleading-indentation "
                     LDFLAGS="$LDFLAGS  -Wl,-z,relro "
               else
-                    CXXFLAGS=" -std=c++17 -pthread -O2 -g -Wall -DLINUX_OS"
+                    CXXFLAGS=" -std=c++20 -pthread -O2 -g -Wall -DLINUX_OS"
 		    LDFLAGS="$LDFLAGS  "
               fi
         ;;

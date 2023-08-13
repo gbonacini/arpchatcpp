@@ -21,12 +21,12 @@
 
 namespace configFile{
 
-    using std::string;
-    using std::to_string;
-    using std::stoul;
-    using std::array;
-    using std::out_of_range;
-    using stringutils::mergeStrings;
+    using std::string,
+          std::to_string,
+          std::stoul,
+          std::array,
+          std::out_of_range,
+          stringutils::mergeStrings;
 
     ConfigData::ConfigData(string&& txt)  noexcept
          : text{txt}  
@@ -45,11 +45,11 @@ namespace configFile{
     {}
 
     ConfigData::ConfigData(double fl)        noexcept
-           : floatingPoint{fl}
+          : floatingPoint{fl}
     {}
 
     ConfigData::ConfigData(bool bol)         noexcept
-            : boolean{bol}
+          : boolean{bol}
     {}
 
     ConfigData::~ConfigData(void){

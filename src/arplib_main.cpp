@@ -132,7 +132,6 @@ int main(int argc, char** argv){
              throw string{"Abort."};
          }
   
-  
          Debug debug{debugMode};
          try{
              debug.init("./arpchat.log.txt");

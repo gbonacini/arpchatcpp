@@ -2,9 +2,9 @@
 // parseCmdLine - a getopt wrapper
 // Copyright (C) 2018  Gabriele Bonacini
 //
-// This program is free software for no profit use, then you can redistribute 
-// it and/or modify it under the terms of the GNU General Public License 
-// as published by the Free Software Foundation; either version 2 of 
+// This program is free software for no profit use, then you can redistribute
+// it and/or modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,10 +24,10 @@
 #include <locale>
 #include <cctype>
 
-using std::string;
-using std::pair;
-using std::toupper;
-using std::tolower;
+using std::string,
+      std::pair,
+      std::toupper,
+      std::tolower;
 
 namespace parcmdline{
 
@@ -44,7 +44,7 @@ namespace parcmdline{
         if(flagsStatus.find(flag) != flagsStatus.end())
             if(flagsStatus.at(flag).isPresent)
                 return true;
-        
+
         return false;
     }
 
@@ -138,8 +138,7 @@ namespace parcmdline{
 
     bool ParseCmdLine::parseArgs(char **argv, const char* flags) noexcept{
         for(int ch { getopt (argcRef, argv, flags)}; static_cast<unsigned char>(ch) != 255; ch = getopt (argcRef, argv, flags)){
-            char c { static_cast<char>(ch) };
-            if(c != '?' && c > 0){
+            if( char c { static_cast<char>(ch) }; c != '?' && c > 0){
                 if(flagsStatus.find(c) == flagsStatus.end()){
                     errorMesg.append("\nError unexpected parameter: ").push_back(c);
                     return setErrorState(true);
@@ -160,7 +159,7 @@ namespace parcmdline{
                         errorMesg.append("\nError duplicated parameter: ").push_back(c);
                         return setErrorState(true);
                     }
-                    
+
                     flagsStatus[c].value.insert(0, optarg);
                 }
             }else if(c == '?'){
@@ -180,18 +179,18 @@ namespace parcmdline{
     }
 
     bool ParseCmdLine::tokenizeFlags(const char* flags) noexcept{
-        int    pos       { 0 }; 
-        char   prevKey   { 0 }; 
+        int    pos       { 0 };
+        char   prevKey   { 0 };
 
         while(flags[pos] != 0){
             if((flags[pos] >= 65 && flags[pos] <= 90) || ( flags[pos] >= 97 && flags[pos] <= 122)){
-                prevKey                           =  flags[pos];
+                prevKey    =  flags[pos];
                 flagsStatus.insert(pair<char, ParseResult>(flags[pos], {false, false, ""}));
             }else if(flags[pos] == 58){
                 if(prevKey == 0)
                     return setErrorState(true);
 
-                flagsStatus[prevKey].hasValue     =  true;
+                flagsStatus[prevKey].hasValue  =  true;
             }else{
                 return setErrorState(true);
             }
@@ -201,16 +200,16 @@ namespace parcmdline{
         return true;
     }
 
-   ParseCmdLineException::ParseCmdLineException(string& errString)
+   ParseCmdLineException::ParseCmdLineException(const string& errString)
         : errorMessage{errString}
    {}
 
-    ParseCmdLineException::ParseCmdLineException(string&& errString)
+    ParseCmdLineException::ParseCmdLineException(const string&& errString)
         : errorMessage{errString}
    {}
- 
+
    const char* ParseCmdLineException::what(void)   const noexcept {
        return errorMessage.c_str();
    }
 
-} // End Namespace 
+} // End namespace parcmdline

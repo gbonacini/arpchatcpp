@@ -25,21 +25,20 @@
 
 namespace chatterminal{
 
-    using std::deque;
-    using std::array;
-    using std::copy;
-    using std::string;
-    using std::to_string;
-    using std::stoul;
-    using std::thread;
-
-    using arplib::ArpPkt;
-    using arplib::Arpsocket;
-    using debugmode::Debug;
-    using debugmode::DEBUG_MODE;
-    using stringutils::mergeStrings;
-    using typeutils::safeSizeT;
-    using typeutils::TypesUtilsException;
+    using std::deque,
+          std::array,
+          std::copy,
+          std::string,
+          std::to_string,
+          std::stoul,
+          std::thread,
+          arplib::ArpPkt,
+          arplib::Arpsocket,
+          debugmode::Debug,
+          debugmode::DEBUG_MODE,
+          stringutils::mergeStrings,
+          typeutils::safeSizeT,
+          typeutils::TypesUtilsException;
     
     Chat::Chat(Arpsocket& arpsckt) noexcept 
        : arpsocket{arpsckt}
@@ -170,14 +169,14 @@ namespace chatterminal{
 
     void Chat::printPrompt(size_t offset) const anyexcept{
         try{
-             const size_t MAX_CHARS  { safeSizeT<int>((sentWide-4) * (sentHeigth-2)) },
+             const size_t MAX_CHARS  { safeSizeT((sentWide-4) * (sentHeigth-2)) },
                           QUEUE_SIZE { sentBufferQueue.size() };
 
              wclear(sent);
 
              if( QUEUE_SIZE <= MAX_CHARS){
-                 for (size_t row { 1 }, text { offset }; row < safeSizeT<int>(sentHeigth - 1) && text < MAX_CHARS && text < QUEUE_SIZE ; row++ ) {
-                    for(size_t chr { 2 } ; chr < safeSizeT<int>( sentWide - 2 ) && text < MAX_CHARS && text < QUEUE_SIZE; chr++ , text++ )
+                 for (size_t row { 1 }, text { offset }; row < safeSizeT(sentHeigth - 1) && text < MAX_CHARS && text < QUEUE_SIZE ; row++ ) {
+                    for(size_t chr { 2 } ; chr < safeSizeT( sentWide - 2 ) && text < MAX_CHARS && text < QUEUE_SIZE; chr++ , text++ )
                         mvwprintw(sent, row, chr, "%c", sentBufferQueue.at(text));
                  }
              }
@@ -191,7 +190,7 @@ namespace chatterminal{
     void Chat::refreshLineCache(void) anyexcept{
         size_t  lineSize     { 0 };
         try{
-            lineSize   =  safeSizeT<int>(getmaxx(received) - 4);
+            lineSize   =  safeSizeT(getmaxx(received) - 4);
         }catch(TypesUtilsException& ex){
              Debug::printLog(mergeStrings({"Error: refreshLineCache() : Unexpected  lineSize values: ", to_string(getmaxx(received) - 4).c_str(),  }), DEBUG_MODE::ERR_DEBUG);
              usleep(500);
@@ -238,7 +237,7 @@ namespace chatterminal{
         string  lineBuffer   {""};
         size_t  lineSize     { 0 };
         try{
-            lineSize   =  safeSizeT<int>(getmaxx(received) - 4);
+            lineSize   =  safeSizeT(getmaxx(received) - 4);
         }catch(TypesUtilsException& ex){
              Debug::printLog(mergeStrings({"Error: updateScreenFromReceived() : Unexpected  lineSize values: ", to_string(getmaxx(received) - 4).c_str(),  }), DEBUG_MODE::ERR_DEBUG);
              throw ArpChatException{"Conversion Error."};
@@ -297,7 +296,7 @@ namespace chatterminal{
                added               { 0 };
 
         try{
-            lineSize   =  safeSizeT<int>(getmaxx(received) - 4);
+            lineSize   =  safeSizeT(getmaxx(received) - 4);
         }catch(TypesUtilsException& ex){
              Debug::printLog(mergeStrings({"Error: updateScreenFromReceived() : Unexpected  lineSize values: ", to_string(getmaxx(received) - 4).c_str(),  }), DEBUG_MODE::ERR_DEBUG);
              usleep(500);
@@ -333,10 +332,10 @@ namespace chatterminal{
     }
 
     void Chat::printHistoryPage(void) anyexcept{
-        size_t lines     { safeSizeT<int>(histHeigth - 3) },
+        size_t lines     { safeSizeT(histHeigth - 3) },
                cacheSize { linesCache.size() };
         try{
-            lines   =  safeSizeT<int>(histHeigth - 3);
+            lines   =  safeSizeT(histHeigth - 3);
         }catch(TypesUtilsException& ex){
              Debug::printLog(mergeStrings({"Error: printHistoryPage() : Unexpected  lines values: ", to_string(histHeigth - 3).c_str(),  }), DEBUG_MODE::ERR_DEBUG);
              usleep(500);
@@ -358,7 +357,7 @@ namespace chatterminal{
         };
 
         try{
-            for(size_t ln{safeSizeT<int>(effectiveOffset())}, rel{0}; rel < lines && ln < cacheSize; ln++, rel++)
+            for(size_t ln{safeSizeT(effectiveOffset())}, rel{0}; rel < lines && ln < cacheSize; ln++, rel++)
                        mvwprintw(received, rel + 2, 2, "%s", linesCache.at(ln).c_str());
         }catch(TypesUtilsException& ex){
              Debug::printLog(mergeStrings({"Error: printHistoryPage() : Unexpected  lines values: ", to_string(histHeigth - 3).c_str(),  }), DEBUG_MODE::ERR_DEBUG);
@@ -399,13 +398,12 @@ namespace chatterminal{
     }
 
     void Chat::getChar(void)  anyexcept {
-         int  chrt      { wgetch(sent) },
-              secchrt   { 0 },
+         int  secchrt   { 0 },
               terchrt   { 0 },
               delta     { 0 };
          auto abs       { [](int val) -> int { return val >= 0 ? val : val * -1;} };
 
-         switch(chrt){
+         switch(int chrt { wgetch(sent) }){
                         case C_SEQUENCE_FIRST:
                         secchrt = wgetch(sent);
                         switch(secchrt){
@@ -484,8 +482,7 @@ namespace chatterminal{
                     if(udsconn > nfds)
                         nfds = udsconn + 1;
     
-                    ssize_t sret {::select(nfds, &fdset, nullptr, nullptr, &tvMin)};
-                    switch(sret){
+                    switch(::select(nfds, &fdset, nullptr, nullptr, &tvMin)){
                         case -1:
                             usleep(150);
                             errmsg = mergeStrings({"Select Error: ", strerror(errno)});
@@ -499,8 +496,7 @@ namespace chatterminal{
                             break;
                         default:
                             pollbuffer = {};
-                            ssize_t  ret = read(udsconn, pollbuffer.data(), pollbuffer.size() - 1);
-                            switch(ret){
+                            switch(read(udsconn, pollbuffer.data(), pollbuffer.size() - 1)){
                                 case -2:
                                     Debug::printLog("All packed filtered with provided rule(s).", DEBUG_MODE::VERBOSE_DEBUG);
                                     break;
