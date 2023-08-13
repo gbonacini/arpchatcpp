@@ -32,7 +32,7 @@ using, as compiler, one in this list:<BR>
 
 To compile the program, this tools/libraries are necessary:
 
-* a c++ compiler ( with c++17 support);
+* a c++ compiler ( with c++20 support);
 * automake/autoconf with libtool;
 * libcap (Capabilities lib), example for Ubuntu/DEbian:
 ```
